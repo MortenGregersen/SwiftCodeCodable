@@ -4,6 +4,7 @@ os:
 language: generic
 sudo: required
 dist: xenial
+osx_image: xcode10.2
 env:
 - SWIFT_VERSION=5.0
 install:
