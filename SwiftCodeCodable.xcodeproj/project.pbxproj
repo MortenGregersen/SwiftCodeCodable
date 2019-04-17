@@ -901,6 +901,7 @@
 			buildPhases = (
 				OBJ_255 /* Sources */,
 				OBJ_264 /* Frameworks */,
+				5AF397CF226751F000065C8F /* Regenerate Tests/LinuxMain.swift */,
 			);
 			buildRules = (
 			);
@@ -1052,6 +1053,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5AF397CF226751F000065C8F /* Regenerate Tests/LinuxMain.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Regenerate Tests/LinuxMain.swift";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "swift test --generate-linuxmain\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		OBJ_139 /* Sources */ = {
