@@ -94,7 +94,6 @@
 		OBJ_259 /* SwiftFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* SwiftFunction.swift */; };
 		OBJ_260 /* SwiftFunctionBodyLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* SwiftFunctionBodyLine.swift */; };
 		OBJ_261 /* SourceKittenStructureDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* SourceKittenStructureDecoder.swift */; };
-		OBJ_262 /* SwiftCodeCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* SwiftCodeCodable.swift */; };
 		OBJ_263 /* SwiftWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* SwiftWriter.swift */; };
 		OBJ_265 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "SourceKitten::SourceKittenFramework::Product" /* SourceKittenFramework.framework */; };
 		OBJ_266 /* Yams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Yams::Yams::Product" /* Yams.framework */; };
@@ -314,7 +313,6 @@
 		OBJ_134 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		OBJ_14 /* SwiftFunctionBodyLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftFunctionBodyLine.swift; sourceTree = "<group>"; };
 		OBJ_15 /* SourceKittenStructureDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceKittenStructureDecoder.swift; sourceTree = "<group>"; };
-		OBJ_16 /* SwiftCodeCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftCodeCodable.swift; sourceTree = "<group>"; };
 		OBJ_17 /* SwiftWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftWriter.swift; sourceTree = "<group>"; };
 		OBJ_21 /* IndentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationTests.swift; sourceTree = "<group>"; };
 		OBJ_22 /* SourceKittenStructureDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceKittenStructureDecoderTests.swift; sourceTree = "<group>"; };
@@ -687,7 +685,6 @@
 			children = (
 				OBJ_9 /* Models */,
 				OBJ_15 /* SourceKittenStructureDecoder.swift */,
-				OBJ_16 /* SwiftCodeCodable.swift */,
 				OBJ_17 /* SwiftWriter.swift */,
 			);
 			name = SwiftCodeCodable;
@@ -1183,7 +1180,6 @@
 				OBJ_259 /* SwiftFunction.swift in Sources */,
 				OBJ_260 /* SwiftFunctionBodyLine.swift in Sources */,
 				OBJ_261 /* SourceKittenStructureDecoder.swift in Sources */,
-				OBJ_262 /* SwiftCodeCodable.swift in Sources */,
 				OBJ_263 /* SwiftWriter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
