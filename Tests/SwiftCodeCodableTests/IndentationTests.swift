@@ -1,6 +1,6 @@
 //
 //  IndentationTests.swift
-//  InterfaceCoderCoreTests
+//  SwiftCodeCodableTests
 //
 //  Created by Morten Bjerg Gregersen on 07/11/2018.
 //  Copyright © 2018 MoGee. All rights reserved.

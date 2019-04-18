@@ -1,6 +1,6 @@
 //
 //  SwiftArray.swift
-//  InterfaceCoderCore
+//  SwiftCodeCodable
 //
 //  Created by Morten Bjerg Gregersen on 02/02/2019.
 //  Copyright © 2019 MoGee. All rights reserved.
