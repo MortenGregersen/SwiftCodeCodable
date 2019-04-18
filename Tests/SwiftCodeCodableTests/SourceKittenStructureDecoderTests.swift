@@ -16,10 +16,9 @@ class SourceKittenStructureDecoderTests: XCTestCase {
 	// swiftlint:disable:next function_body_length
 	func testDecoding() {
 		do {
-			let swiftString = testSwift
-			let structure = try Structure(file: File(contents: swiftString))
+			let structure = try Structure(file: File(contents: testSwift))
 			let decoder = SourceKittenStructureDecoder()
-			decoder.userInfo = [RawSwiftDecodingInfo.key: swiftString]
+			decoder.userInfo = [RawSwiftDecodingInfo.key: testSwift]
 
 			let decodedFile = try decoder.decode(SwiftFile.self, from: structure)
 			XCTAssertEqual(decodedFile.classes.count, 2)

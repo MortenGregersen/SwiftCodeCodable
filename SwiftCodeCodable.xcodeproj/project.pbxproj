@@ -470,6 +470,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5AF397D522689CBA00065C8F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_23 /* SwiftArrayTests.swift */,
+				OBJ_25 /* SwiftFunctionBodyExpressionArgumentTests.swift */,
+				OBJ_26 /* SwiftFunctionBodyExpressionCallTests.swift */,
+				OBJ_27 /* SwiftFunctionBodyLocalVarAssignmentTests.swift */,
+				OBJ_28 /* SwiftFunctionTests.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		OBJ_101 /* Yams */ = {
 			isa = PBXGroup;
 			children = (
@@ -532,13 +544,9 @@
 		OBJ_19 /* SwiftCodeCodableTests */ = {
 			isa = PBXGroup;
 			children = (
+				5AF397D522689CBA00065C8F /* Models */,
 				OBJ_21 /* IndentationTests.swift */,
 				OBJ_22 /* SourceKittenStructureDecoderTests.swift */,
-				OBJ_23 /* SwiftArrayTests.swift */,
-				OBJ_25 /* SwiftFunctionBodyExpressionArgumentTests.swift */,
-				OBJ_26 /* SwiftFunctionBodyExpressionCallTests.swift */,
-				OBJ_27 /* SwiftFunctionBodyLocalVarAssignmentTests.swift */,
-				OBJ_28 /* SwiftFunctionTests.swift */,
 				OBJ_29 /* SwiftWriterTests.swift */,
 				OBJ_30 /* XCTestManifests.swift */,
 			);
@@ -657,7 +665,7 @@
 			path = .build/checkouts/SourceKitten/Source/SourceKittenFramework;
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -669,7 +677,6 @@
 				OBJ_134 /* README.md */,
 				5AF397D0226752D500065C8F /* .travis.yml */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
@@ -1017,7 +1024,7 @@
 				English,
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_124 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
