@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		5AF397CE2267516600065C8F /* Example.testswift in Resources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* Example.testswift */; };
 		OBJ_140 /* api.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_92 /* api.c */; };
 		OBJ_141 /* emitter.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_93 /* emitter.c */; };
 		OBJ_142 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_94 /* parser.c */; };
@@ -284,6 +283,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5AF397D0226752D500065C8F /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		OBJ_10 /* SwiftArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftArray.swift; sourceTree = "<group>"; };
 		OBJ_100 /* yaml.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = yaml.h; sourceTree = "<group>"; };
 		OBJ_102 /* Constructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constructor.swift; sourceTree = "<group>"; };
@@ -316,7 +316,6 @@
 		OBJ_15 /* SourceKittenStructureDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceKittenStructureDecoder.swift; sourceTree = "<group>"; };
 		OBJ_16 /* SwiftCodeCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftCodeCodable.swift; sourceTree = "<group>"; };
 		OBJ_17 /* SwiftWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftWriter.swift; sourceTree = "<group>"; };
-		OBJ_20 /* Example.testswift */ = {isa = PBXFileReference; lastKnownFileType = text; path = Example.testswift; sourceTree = "<group>"; };
 		OBJ_21 /* IndentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationTests.swift; sourceTree = "<group>"; };
 		OBJ_22 /* SourceKittenStructureDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceKittenStructureDecoderTests.swift; sourceTree = "<group>"; };
 		OBJ_23 /* SwiftArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftArrayTests.swift; sourceTree = "<group>"; };
@@ -535,7 +534,6 @@
 		OBJ_19 /* SwiftCodeCodableTests */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_20 /* Example.testswift */,
 				OBJ_21 /* IndentationTests.swift */,
 				OBJ_22 /* SourceKittenStructureDecoderTests.swift */,
 				OBJ_23 /* SwiftArrayTests.swift */,
@@ -671,6 +669,7 @@
 				OBJ_124 /* Products */,
 				OBJ_133 /* LICENSE */,
 				OBJ_134 /* README.md */,
+				5AF397D0226752D500065C8F /* .travis.yml */,
 			);
 			name = "";
 			sourceTree = "<group>";
@@ -1048,7 +1047,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5AF397CE2267516600065C8F /* Example.testswift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
