@@ -1,13 +1,7 @@
 os:
-- linux
 - osx
 language: generic
 sudo: required
-dist: xenial
 osx_image: xcode10.2
-env:
-- SWIFT_VERSION=5.0
-install:
-- eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
 script:
 - swift test
