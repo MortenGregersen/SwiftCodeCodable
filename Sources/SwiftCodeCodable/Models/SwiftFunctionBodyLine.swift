@@ -3,72 +3,54 @@
 //  SwiftCodeCodable
 //
 //  Created by Morten Bjerg Gregersen on 06/11/2018.
-//  Copyright © 2018 MoGee. All rights reserved.
 //
 
 import Foundation
+import SwiftSyntax
 
-public protocol SwiftFunctionBodyLine: Decodable {
-	static var kindId: String { get }
+public protocol SwiftFunctionBodyLine {
+	
 }
 
 public class SwiftFunctionBodyLocalVarAssignment: SwiftFunctionBodyLine {
-	public static let kindId = "source.lang.swift.decl.var.local"
 	public let name: String
 	public var expressionCall: SwiftFunctionBodyExpressionCall!
 
-	enum CodingKeys: String, CodingKey {
-		case kind = "key.kind"
-		case name = "key.name"
-	}
-
-	public required init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		guard try values.decode(String.self, forKey: .kind) == SwiftFunctionBodyLocalVarAssignment.kindId else {
-			throw CustomDecodingError.wrongKind
-		}
-		self.name = try values.decode(String.self, forKey: .name)
+	public init(from varDeclSyntax: VariableDeclSyntax) {
+		name = (varDeclSyntax.bindings[0].pattern as! IdentifierPatternSyntax).identifier.text
+		let exprSyntax = varDeclSyntax.bindings[0].initializer!.value as! FunctionCallExprSyntax
+		expressionCall = SwiftFunctionBodyExpressionCall(from: exprSyntax)
 	}
 }
 
 public class SwiftFunctionBodyExpressionCall: SwiftFunctionBodyLine, SwiftFunctionBodyExpressionArgumentValue {
-	public static let kindId = "source.lang.swift.expr.call"
 	public let name: String
 	public var arguments = [SwiftFunctionBodyExpressionArgument]()
 
-	enum CodingKeys: String, CodingKey {
-		case kind = "key.kind"
-		case name = "key.name"
-		case bodyLength = "key.bodylength"
-		case bodyOffset = "key.bodyoffset"
-		case substructures = "key.substructure"
-	}
-
-	public required init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		guard try values.decode(String.self, forKey: .kind) == SwiftFunctionBodyExpressionCall.kindId else {
-			throw CustomDecodingError.wrongKind
-		}
-		self.name = try values.decode(String.self, forKey: .name)
-
-		if var substructuresContainer = try? values.nestedUnkeyedContainer(forKey: .substructures) {
-			while !substructuresContainer.isAtEnd {
-				if let expressionArgument = try? substructuresContainer.decode(SwiftFunctionBodyExpressionArgument.self) {
-					arguments.append(expressionArgument)
-				} else if let arrayArgument = try? substructuresContainer.decode(SwiftArray.self) {
-					arguments.append(SwiftFunctionBodyExpressionArgument(name: nil, value: arrayArgument))
-				} else {
-					throw CustomDecodingError.unknownExpressionCallSubstructure
-				}
+	public init(from exprSyntax: FunctionCallExprSyntax) {
+		let memberName: String?
+		let expressionName: String
+		if let memberAccessExprSytax = exprSyntax.calledExpression as? MemberAccessExprSyntax {
+			if let superMemberName = (memberAccessExprSytax.base as? SuperRefExprSyntax)?.superKeyword.text {
+				memberName = superMemberName
+			} else if let subMemberAccessExprSytax = memberAccessExprSytax.base as? MemberAccessExprSyntax {
+				let parentMemberName = (subMemberAccessExprSytax.base as! IdentifierExprSyntax).identifier.text
+				memberName = "\(parentMemberName).\(subMemberAccessExprSytax.name.text)"
+			} else {
+				memberName = (memberAccessExprSytax.base as! IdentifierExprSyntax).identifier.text
 			}
-		} else if let swiftString = decoder.userInfo[RawSwiftDecodingInfo.key] as? String,
-			let valueLength = try values.decodeIfPresent(Int.self, forKey: .bodyLength),
-			valueLength > 0 {
-			let valueOffset = try values.decode(Int.self, forKey: .bodyOffset)
-			let startIndex = swiftString.index(swiftString.startIndex, offsetBy: valueOffset)
-			let endIndex = swiftString.index(swiftString.startIndex, offsetBy: valueOffset + valueLength)
-			let stringValue = String(swiftString[startIndex..<endIndex])
-			arguments.append(SwiftFunctionBodyExpressionArgument(value: stringValue))
+			expressionName = memberAccessExprSytax.name.text
+		} else {
+			memberName = nil
+			expressionName = (exprSyntax.calledExpression as! IdentifierExprSyntax).identifier.text
+		}
+		if let memberName = memberName {
+			name = "\(memberName).\(expressionName)"
+		} else {
+			name = expressionName
+		}
+		exprSyntax.argumentList.forEach { argumentSyntax in
+			arguments.append(SwiftFunctionBodyExpressionArgument(from: argumentSyntax))
 		}
 	}
 }
@@ -78,50 +60,26 @@ public protocol SwiftFunctionBodyExpressionArgumentValue { }
 extension String: SwiftFunctionBodyExpressionArgumentValue { }
 
 public struct SwiftFunctionBodyExpressionArgument: SwiftFunctionBodyLine {
-	public static let kindId = "source.lang.swift.expr.argument"
 	public let name: String?
 	public var value: SwiftFunctionBodyExpressionArgumentValue!
-
-	enum CodingKeys: String, CodingKey {
-		case kind = "key.kind"
-		case name = "key.name"
-		case bodyLength = "key.bodylength"
-		case bodyOffset = "key.bodyoffset"
-		case substructures = "key.substructure"
+	
+	public init(from argumentSyntax: FunctionCallArgumentSyntax) {
+		let name = argumentSyntax.label?.text
+		if let boolExprSyntax = argumentSyntax.expression as? BooleanLiteralExprSyntax {
+			self.init(name: name, value: boolExprSyntax.booleanLiteral.text)
+		} else if let floatExprSyntax = argumentSyntax.expression as? FloatLiteralExprSyntax {
+			self.init(name: name, value: floatExprSyntax.floatingDigits.text)
+		} else if let stringExprSyntax = argumentSyntax.expression as? StringLiteralExprSyntax {
+			self.init(name: name, value: stringExprSyntax.stringLiteral.text)
+		} else if let exprCallSyntax = argumentSyntax.expression as? FunctionCallExprSyntax {
+			self.init(name: name, value: SwiftFunctionBodyExpressionCall(from: exprCallSyntax))
+		} else {
+			self.init(name: name, value: (argumentSyntax.expression as! IdentifierExprSyntax).identifier.text)
+		}
 	}
 
-	init(name: String? = nil, value: SwiftFunctionBodyExpressionArgumentValue) {
+	public init(name: String? = nil, value: SwiftFunctionBodyExpressionArgumentValue) {
 		self.name = name
 		self.value = value
-	}
-
-	public init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		guard try values.decode(String.self, forKey: .kind) == SwiftFunctionBodyExpressionArgument.kindId else {
-			throw CustomDecodingError.wrongKind
-		}
-		self.name = try values.decode(String.self, forKey: .name)
-
-		if var substructuresContainer = try? values.nestedUnkeyedContainer(forKey: .substructures) {
-			while !substructuresContainer.isAtEnd {
-				do {
-					if let expressionCall = try? substructuresContainer.decode(SwiftFunctionBodyExpressionCall.self) {
-						value = expressionCall
-					} else {
-						throw CustomDecodingError.unknownExpressionArgumentSubstructure
-					}
-				}
-			}
-		} else {
-			guard let swiftString = decoder.userInfo[RawSwiftDecodingInfo.key] as? String else {
-				throw CustomDecodingError.missingRawSwift
-			}
-			let valueOffset = try values.decode(Int.self, forKey: .bodyOffset)
-			let valueLength = try values.decode(Int.self, forKey: .bodyLength)
-			let startIndex = swiftString.index(swiftString.startIndex, offsetBy: valueOffset)
-			let endIndex = swiftString.index(swiftString.startIndex, offsetBy: valueOffset + valueLength)
-			let stringValue = String(swiftString[startIndex..<endIndex])
-			value = stringValue
-		}
 	}
 }

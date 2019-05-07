@@ -62,21 +62,27 @@ class func create(service: MyService) -> MyView {
 }
 """
 		XCTAssertEqual(actual2, expected2)
+		
+		let actual3 = SwiftWriter.generateFunctionDeclaration(type: .initializer(required: false, override: true, canReturnNil: false), arguments: ["frame": "CGRect"], content: "alpha = 0.5")
+		let expected3 = """
+override init(frame: CGRect) {
+	alpha = 0.5
+}
+"""
+		XCTAssertEqual(actual3, expected3)
+		
+		let actual4 = SwiftWriter.generateFunctionDeclaration(type: .initializer(required: true, override: false, canReturnNil: true), arguments: ["aDecoder": "NSCoder"], content: #"fatalError("init(coder:) has not been implemented")"#)
+		let expected4 = """
+required init?(aDecoder: NSCoder) {
+	fatalError("init(coder:) has not been implemented")
+}
+"""
+		XCTAssertEqual(actual4, expected4)
 	}
 
 	func testGenerateVariableAssignment() {
 		let actual = SwiftWriter.generateVariableAssignment(type: .let, destination: "answer", value: "42")
 		let expected = "let answer = 42"
 		XCTAssertEqual(actual, expected)
-	}
-
-	func testInitializerFunctionType() {
-		let actual1 = SwiftWriter.FunctionType.initializer(required: false, override: false, canReturnNil: false).stringValue
-		let expected1 = "init"
-		XCTAssertEqual(actual1, expected1)
-
-		let actual2 = SwiftWriter.FunctionType.initializer(required: true, override: true, canReturnNil: true).stringValue
-		let expected2 = "required override init?"
-		XCTAssertEqual(actual2, expected2)
 	}
 }

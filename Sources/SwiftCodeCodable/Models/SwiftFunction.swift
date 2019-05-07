@@ -3,13 +3,12 @@
 //  SwiftCodeCodable
 //
 //  Created by Morten Bjerg Gregersen on 21/10/2018.
-//  Copyright © 2018 MoGee. All rights reserved.
 //
 
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct SwiftFunction: Decodable {
+public struct SwiftFunction {
 	public let name: String
 	public let accessibility: SwiftFunctionAccessibility
 	public let kind: SwiftFunctionKind
@@ -17,54 +16,59 @@ public struct SwiftFunction: Decodable {
 	public let parameters: [SwiftFunctionParameter]
 	public let returnType: String?
 	public let bodyLines: [SwiftFunctionBodyLine]
-
-	enum CodingKeys: String, CodingKey {
-		case name = "key.name"
-		case accessibility = "key.accessibility"
-		case kind = "key.kind"
-		case attributes = "key.attributes"
-		case returnType = "key.typename"
-
-		case substructures = "key.substructure"
-	}
-
-	enum BodyLinesCodingKeys: String, CodingKey {
-		case kind = "key.kind"
-	}
-
-	public init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		self.name = try values.decode(String.self, forKey: .name)
-		self.accessibility = try values.decode(SwiftFunctionAccessibility.self, forKey: .accessibility)
-		self.kind = try values.decode(SwiftFunctionKind.self, forKey: .kind)
-		self.attributes = try values.decodeIfPresent([SwiftFunctionAttribute].self, forKey: .attributes)
-		self.returnType = try values.decodeIfPresent(String.self, forKey: .returnType)
-
-		var substructuresContainer = try values.nestedUnkeyedContainer(forKey: .substructures)
-		var parameters = [SwiftFunctionParameter]()
-		var bodyLines = [SwiftFunctionBodyLine]()
-		var lastLocalVarAssignment: SwiftFunctionBodyLocalVarAssignment?
-		while !substructuresContainer.isAtEnd {
-			do {
-				if let parameter = try? substructuresContainer.decode(SwiftFunctionParameter.self) {
-					parameters.append(parameter)
-				} else if let localVarAssignment = try? substructuresContainer.decode(SwiftFunctionBodyLocalVarAssignment.self) {
-					bodyLines.append(localVarAssignment)
-					lastLocalVarAssignment = localVarAssignment
-				} else if let expressionCall = try? substructuresContainer.decode(SwiftFunctionBodyExpressionCall.self) {
-					if let theLastLocalVarAssignment = lastLocalVarAssignment {
-						theLastLocalVarAssignment.expressionCall = expressionCall
-						lastLocalVarAssignment = nil
-					} else {
-						bodyLines.append(expressionCall)
-					}
-				} else {
-					throw CustomDecodingError.unknownBodyLineType
-				}
+	
+	public init(from funcDeclSyntax: FunctionDeclSyntax) {
+		name = funcDeclSyntax.identifier.text
+		var attributes: [SwiftFunctionAttribute] = []
+		funcDeclSyntax.modifiers?.forEach {
+			if let attribute = SwiftFunctionAttribute(from: $0) {
+				attributes.append(attribute)
 			}
 		}
-		self.parameters = parameters
-		self.bodyLines = bodyLines
+		accessibility = .internal
+		kind = attributes.contains(.class) ? .class : .instance
+		self.attributes = attributes
+		parameters = funcDeclSyntax.signature.input.parameterList.map {
+			SwiftFunctionParameter(name: $0.firstName!.text, type: ($0.type as! SimpleTypeIdentifierSyntax).name.text)
+		}
+		returnType = (funcDeclSyntax.signature.output?.returnType as? SimpleTypeIdentifierSyntax)?.name.text ?? nil
+		bodyLines = funcDeclSyntax.body!.statements.compactMap {
+			if let varDeclSyntax = $0.item as? VariableDeclSyntax {
+				return SwiftFunctionBodyLocalVarAssignment(from: varDeclSyntax)
+			} else if let callExprSyntax = $0.item as? FunctionCallExprSyntax {
+				return SwiftFunctionBodyExpressionCall(from: callExprSyntax)
+			}
+			return nil
+		}
+	}
+	
+	public init(from initDeclSyntax: InitializerDeclSyntax) {
+		var name = initDeclSyntax.initKeyword.text
+		if let optionalMark = initDeclSyntax.optionalMark {
+			name += optionalMark.text
+		}
+		self.name = name
+		var attributes: [SwiftFunctionAttribute] = []
+		initDeclSyntax.modifiers?.forEach {
+			if let attribute = SwiftFunctionAttribute(from: $0) {
+				attributes.append(attribute)
+			}
+		}
+		accessibility = .internal
+		kind = .instance
+		self.attributes = attributes
+		parameters = initDeclSyntax.parameters.parameterList.map {
+			SwiftFunctionParameter(name: $0.firstName!.text, type: ($0.type as! SimpleTypeIdentifierSyntax).name.text)
+		}
+		returnType = nil
+		bodyLines = initDeclSyntax.body!.statements.compactMap {
+			if let varDeclSyntax = $0.item as? VariableDeclSyntax {
+				return SwiftFunctionBodyLocalVarAssignment(from: varDeclSyntax)
+			} else if let callExprSyntax = $0.item as? FunctionCallExprSyntax {
+				return SwiftFunctionBodyExpressionCall(from: callExprSyntax)
+			}
+			return nil
+		}
 	}
 }
 
@@ -77,33 +81,27 @@ public enum SwiftFunctionKind: String, Decodable {
 	case instance = "source.lang.swift.decl.function.method.instance"
 }
 
-public enum SwiftFunctionAttribute: String, Decodable {
-	case override = "source.decl.attribute.override"
-	case required = "source.decl.attribute.required"
-	case `internal` = "source.decl.attribute.internal"
-
-	enum CodingKeys: String, CodingKey {
-		case attribute = "key.attribute"
-	}
-
-	public init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		let rawValue = try values.decode(String.self, forKey: .attribute)
+public enum SwiftFunctionAttribute: String {
+	case override
+	case required
+	case `internal`
+	case `class`
+	
+	public init?(from declModifierSyntax: DeclModifierSyntax) {
+		let rawValue = declModifierSyntax.name.text
 		guard let attribute = SwiftFunctionAttribute(rawValue: rawValue) else {
-			let context = DecodingError.Context(codingPath: [CodingKeys.attribute], debugDescription: "Attribute not found")
-			throw DecodingError.valueNotFound(SwiftFunctionAttribute.self, context)
+			return nil
 		}
 		self = attribute
 	}
 }
 
-public struct SwiftFunctionParameter: Decodable {
-	static let kindId = "source.lang.swift.decl.var.parameter"
-	let name: String
-	let type: String
-
-	enum CodingKeys: String, CodingKey {
-		case name = "key.name"
-		case type = "key.typename"
+public struct SwiftFunctionParameter {
+	public let name: String
+	public let type: String
+	
+	public init(name: String, type: String) {
+		self.name = name
+		self.type = type
 	}
 }

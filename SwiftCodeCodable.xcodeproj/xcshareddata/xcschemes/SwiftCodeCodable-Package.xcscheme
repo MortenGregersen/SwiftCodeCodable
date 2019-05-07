@@ -26,7 +26,18 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "SwiftCodeCodable::SwiftCodeCodable"
+            BuildableName = "SwiftCodeCodable.framework"
+            BlueprintName = "SwiftCodeCodable"
+            ReferencedContainer = "container:SwiftCodeCodable.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -37,8 +48,25 @@
                BlueprintName = "SwiftCodeCodableTests"
                ReferencedContainer = "container:SwiftCodeCodable.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SourceKittenStructureDecoderTests">
+               </Test>
+               <Test
+                  Identifier = "SwiftCodeDecoderTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "SwiftCodeCodable::SwiftCodeCodable"
+            BuildableName = "SwiftCodeCodable.framework"
+            BlueprintName = "SwiftCodeCodable"
+            ReferencedContainer = "container:SwiftCodeCodable.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -70,6 +98,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "SwiftCodeCodable::SwiftCodeCodable"
+            BuildableName = "SwiftCodeCodable.framework"
+            BlueprintName = "SwiftCodeCodable"
+            ReferencedContainer = "container:SwiftCodeCodable.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
